@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+<div class="container" id="container">
+    <div class="form-container sign-up-container">
+        <form id="signUpForm">
+            <h1>Create Account</h1>
+            <input type="text" id="name" placeholder="Name" />
+            <input type="text" id="student-id" placeholder="Student ID" />
+            <input type="email" id="email" placeholder="Email" />
+            <input type="text" id="phone" placeholder="Phone" />
+            <input type="password" id="password" placeholder="Password" />
+            <button type="button" id="btnSignUp">Sign Up</button>
+        </form>
+    </div>
+    <div class="form-container sign-in-container">
+        <form id="signInForm">
+            <h1>Sign in</h1>
+            <input type="text" name="studentid" placeholder="Student ID" />
+            <input type="password" name="password" placeholder="Password" />
+            <button type="button" id="btnSignIn">Sign In</button>
+        </form>
+        <div id="login-msg" class="hidden"></div>
+    </div>
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-left">
+                <h1>Welcome Back!</h1>
+                <p>To keep connected with us please login with your personal info</p>
+                <button class="ghost" id="signIn">Sign In</button>
+            </div>
+            <div class="overlay-panel overlay-right">
+                <h1>Hello, Friend!</h1>
+                <p>Enter your personal details and start journey with us</p>
+                <button class="ghost" id="signUp">Sign Up</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="/js/login.js"></script>
+</body>
+</html>
