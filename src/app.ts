@@ -22,7 +22,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', loginRouter);
-app.use('/users', AuthProtector.ensureAuthenticated, usersRouter);
+app.use('/user', AuthProtector.ensureAuthenticated, usersRouter);
 app.use('/event', AuthProtector.ensureAuthenticated, eventRouter);
 
 // catch 404 and forward to error handler

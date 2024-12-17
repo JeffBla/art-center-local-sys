@@ -1,14 +1,10 @@
 import * as admin from 'firebase-admin';
 
-var firebaseAdmin = admin.initializeApp({
-    credential: admin.credential.applicationDefault(),
-    databaseURL: 'https://art-center-service-learning-default-rtdb.asia-southeast1.firebasedatabase.app'
-});
+var serviceAccount = require("../../art-center-service-learning-firebase-adminsdk-71cle-9ae6a911f3.json");
 
-firebaseAdmin.auth().updateUser("UwMftHx65lNjY3ZdX2AUhBRBo0F3", {emailVerified: true}).then((userRecord) => {
-    console.log('Successfully updated user', userRecord.toJSON());
-}).catch((error) => {
-    console.error('Error updating user:', error);
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: 'https://art-center-service-learning-default-rtdb.asia-southeast1.firebasedatabase.app'
 });
 
 class FirebaseService {
