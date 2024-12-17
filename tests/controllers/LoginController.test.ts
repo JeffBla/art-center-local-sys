@@ -1,9 +1,9 @@
 import {Request, Response} from 'express';
-import LoginController from '../src/controllers/LoginController';
-import LoginModel from '../src/models/LoginModel';
+import LoginController from '../../src/controllers/LoginController';
+import LoginModel from '../../src/models/LoginModel';
 
 // Mock the LoginModel
-jest.mock('../src/models/LoginModel');
+jest.mock('../../src/models/LoginModel');
 
 describe('LoginController', () => {
     let loginController: LoginController;
