@@ -1,4 +1,27 @@
-let username = document.getElementById("username").innerHTML;
+document.addEventListener("DOMContentLoaded", function () {
+    getPersonalInfo();
+    LoadSelectedEvent();
+});
+
+function getPersonalInfo() {
+    fetch('/user/info', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(personalInfo => {
+            document.getElementById("username").innerText = personalInfo.username;
+            document.getElementById("username-span").innerText = personalInfo.username;
+            document.getElementById("student-id-span").innerText = personalInfo.studentID;
+            document.getElementById("email-span").innerText = personalInfo.email;
+            document.getElementById("phone-span").innerText = personalInfo.phone;
+        })
+        .catch(error => {
+            console.error('Error fetching personal info:', error);
+        });
+}
 
 function LoadSelectedEvent() {
     let loading = document.getElementById("popping-loading");
@@ -7,33 +30,38 @@ function LoadSelectedEvent() {
     // Show the loading spinner
     loading.style.display = "block";
 
-    // Run the Google script to fetch the data
-    google.script.run
-        .withSuccessHandler(function (tableContent) {
-            // Check if the table content is empty
-            if (Object.keys(tableContent).length === 0) {
+    fetch('/user/event', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(eventsDetails => {
+            // Check if the events are empty
+            if (eventsDetails.length === 0) {
                 emptyEvent.style.display = "block";
+                emptyEvent.textContent = "沒有紀錄";
             } else {
                 emptyEvent.style.display = "none";
-                writeTableContent(tableContent);
+                writeTableContent(eventsDetails);
             }
 
             // Hide the loading spinner after data is loaded
             loading.style.display = "none";
         })
-        .WriteServiceTable(username);
+        .catch(error => {
+            console.error('Error loading events:', error);
+            loading.style.display = "none";
+        });
 }
 
-function writeTableContent(tableContent) {
-    for (let eventname in tableContent) {
-        appendEventRow(
-            eventname,
-            tableContent[eventname]["time"],
-            tableContent[eventname]["place"],
-            tableContent[eventname]["hours"],
-            tableContent[eventname]["note"]
-        );
-    }
+function writeTableContent(eventsDetails) {
+    console.log(eventsDetails);
+    defaultNote = "無";
+    eventsDetails.forEach(event => {
+        appendEventRow(event["活動名稱-內容"], event["支援時間(日期-星期-24小時制)"], event["工作地點(校區-地點)"], event["工作時數(時)"], event["備註說明"] || defaultNote);
+    });
 }
 
 function appendEventRow(eventname, time, place, hours, note) {
@@ -72,34 +100,18 @@ function cancelEvent(eventname, row) {
     row.parentNode.removeChild(row);
 
     // Update the backend
-    google.script.run
-        .withSuccessHandler(function (response) {
+    fetch('/user/cancelEvent', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({eventname: eventname})
+    })
+        .then(response => response.json())
+        .then(response => {
             console.log(response);
         })
-        .cancelSelectedEvent(username, eventname);
-}
-
-function clearTable() {
-    let table = document.getElementById("my-service");
-
-    // Remove all rows except the header (first row)
-    let rowCount = table.rows.length;
-    for (let i = rowCount - 1; i > 0; i--) {
-        table.deleteRow(i);
-    }
-}
-
-function getPersonalInfo() {
-    let username = document.getElementById("username");
-    google.script.run.withSuccessHandler(writePersonalInfo).readPersonalInfo(username.innerHTML);
-}
-
-function writePersonalInfo(personalInfo) {
-    let student_id = document.getElementById("student-id");
-    let email = document.getElementById("email");
-    let phone = document.getElementById("phone");
-
-    student_id.innerHTML = "學號: " + personalInfo[0];
-    email.innerHTML = "Email: " + personalInfo[1];
-    phone.innerHTML = "手機: " + personalInfo[2];
+        .catch(error => {
+            console.error('Error cancelling event:', error);
+        });
 }

@@ -2,72 +2,36 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <base target="_top" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="/css/profile.css" />
+    <base target="_top"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="/css/profile.css"/>
 </head>
-<body onload="LoadSelectedEvent()">
+<body>
 <header>
     <h1>我的資訊</h1>
-    <h3 id="username"><?= username ?></h3>
+    <h3 id="username"></h3>
 </header>
 
-<div class="nav-container">
-    <form method="post" action="<?= getUrl() ?>">
-        <input type="hidden" value="<?= username ?>" name="username" />
-        <input type="hidden" value="<?= studentid ?>" name="studentid" />
-        <button type="submit" value="Home" name="HomeButton">
-            <i class="fa fa-home" aria-hidden="true"></i>
-            首頁
-        </button>
-    </form>
-
-    <form method="post" action="<?= getUrl() ?>">
-        <input type="hidden" value="<?= username ?>" name="username" />
-        <input type="hidden" value="<?= studentid ?>" name="studentid" />
-        <button type="submit" value="Profile" name="ProfileButton">
-            <i class="fa fa-user" aria-hidden="true"></i>
-            我的資訊
-        </button>
-    </form>
-
-    <form method="post" action="<?= getUrl() ?>">
-        <input type="hidden" value="<?= username ?>" name="username" />
-        <input type="hidden" value="<?= studentid ?>" name="studentid" />
-        <button type="submit" value="SelectService" name="SelectLearningButton">
-            <i class="fa fa-hand-o-up" aria-hidden="true"></i>
-            選擇服務學習
-        </button>
-    </form>
-
-    <form method="post" action="<?= getUrl() ?>">
-        <input type="hidden" value="<?= username ?>" name="username" />
-        <input type="hidden" value="<?= studentid ?>" name="studentid" />
-        <button type="submit" value="Logout" name="LogoutButton">
-            <i class="fa fa-sign-out" aria-hidden="true"></i>
-            登出
-        </button>
-    </form>
-</div>
+<%- include('navbar') %>
 
 <div id="info-box">
     <div class="container">
         <p id="name">
             <i class="fa fa-user-circle" aria-hidden="true"></i>
-            姓名：<?= username ?>
+            姓名：<span id="username-span"></span>
         </p>
         <p id="student-id">
             <i class="fa fa-id-card" aria-hidden="true"></i>
-            學號：<?= studentid ?>
+            學號：<span id="student-id-span"></span>
         </p>
         <p id="email">
             <i class="fa fa-envelope" aria-hidden="true"></i>
-            Email：<?= email ?>
+            Email：<span id="email-span"></span>
         </p>
         <p id="phone">
             <i class="fa fa-phone" aria-hidden="true"></i>
-            手機：<?= phone ?>
+            手機：<span id="phone-span"></span>
         </p>
     </div>
 
@@ -93,6 +57,6 @@
     </div>
 </div>
 
-<script src="js/profile.js" />
+<script src="/js/profile.js"></script>
 </body>
 </html>

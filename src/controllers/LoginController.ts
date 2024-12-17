@@ -19,12 +19,12 @@ class LoginController {
         const {studentid, password} = req.body;
         try {
             const user = await this.loginModel.checkLogin(studentid, password);
-            console.log(user);
             if (user) {
-                res.cookie('username', user?.username, { httpOnly: true });
-                res.cookie('studentid', user?.studentID, { httpOnly: true });
+                res.cookie('username', user?.username, {httpOnly: true});
+                res.cookie('studentid', user?.studentID, {httpOnly: true});
                 res.json({success: true});
             } else {
+                console.log('Incorrect username or password.');
                 res.json({success: false, message: 'Incorrect username or password.'});
             }
         } catch (error) {

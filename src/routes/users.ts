@@ -6,6 +6,7 @@ const userController = new UserController();
 
 /* GET users listing. */
 router.get('/', userController.profilePage);
-router.get('/select-service', userController.selectService);
+router.post('/event', userController.userEvent);
+router.post('/info', userController.userInfo);
 
 export default router;
