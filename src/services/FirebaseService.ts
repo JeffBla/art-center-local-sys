@@ -13,6 +13,11 @@ class FirebaseService {
     }
 
     public async fetchFromFirebase(path: string): Promise<any> {
+        const snapshot = await this.getDatabaseRef(path).get();
+        return snapshot.val();
+    }
+
+    public async fetchFromCache(path: string, query: string): Promise<any> {
         const snapshot = await this.getDatabaseRef(path).once('value');
         return snapshot.val();
     }

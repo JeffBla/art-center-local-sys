@@ -3,10 +3,18 @@ function LoadSelectBoxOption() {
     document.getElementById("loading-spinner").style.display = "flex";
 
     console.log("Loading selection data...");
-    // Call the Apps Script function to get the data
-    google.script.run.withSuccessHandler(generateSelectBox).getEventSheetData();
-
-    console.log("Complete Loading data...");
+    $.ajax({
+        url: '/event/events',
+        method: 'POST',
+        dataType: 'json',
+        success: function (data) {
+            generateSelectBox(data);
+            console.log("Complete Loading data...");
+        },
+        error: function (error) {
+            console.error('Error:', error);
+        }
+    });
 }
 
 function generateSelectBox(data) {
@@ -49,7 +57,8 @@ function generateSelectBox(data) {
     // Add event listener to the newly created select element
     select.addEventListener("change", handleSelectChange);
 
-    SetDisabledOptions(data);
+    // Fetch and disable options
+    fetchDisabledOptions();
 }
 
 function handleSelectChange() {
@@ -68,13 +77,22 @@ function handleSelectChange() {
     noSelection.style.display = "none";
     eventInfo.style.display = "none";
 
-    // Simulate fetching event details (replace with real data fetching logic if needed)
-    setTimeout(() => {
-        // Hide loading animation
-        infoDiv.classList.remove("loading");
-
-        google.script.run.withSuccessHandler(setInfo).getEventInfo(selectedValue);
-    }, 3000); // Simulate a delay of 3 seconds
+    // Fetch event details
+    $.ajax({
+        url: `/event/eventinfo`,
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: JSON.stringify({eventname: selectedValue}),
+        success: function (data) {
+            loader.style.display = "none";
+            setInfo(data);
+        },
+        error: function (error) {
+            console.error('Error:', error);
+        }
+    });
 }
 
 // Enable all first, then disable the required
@@ -102,12 +120,15 @@ function setInfo(eventInfos) {
     const infoDiv = document.querySelector(".info");
     const eventInfo = infoDiv.querySelector(".event-info");
 
-    eventNames.textContent = "活動名稱: " + eventInfos[0];
-    eventTime.textContent = "活動時間: " + eventInfos[1];
-    eventPlace.textContent = "活動地點: " + eventInfos[2];
-    eventHours.textContent = "活動時數: " + eventInfos[3];
-    eventNote.textContent = "備註: " + eventInfos[4];
-
+    eventNames.textContent = "活動名稱: " + eventInfos['活動名稱-內容'];
+    eventTime.textContent = "活動時間: " + eventInfos['支援時間(日期-星期-24小時制)'];
+    eventPlace.textContent = "活動地點: " + eventInfos['工作地點(校區-地點)'];
+    eventHours.textContent = "活動時數: " + eventInfos['工作時數(時)'];
+    if(eventInfos['備註說明'] != null) {
+        eventNote.textContent = "備註: " + eventInfos['備註說明'];
+    }else{
+        eventNote.textContent = "備註: 無";
+    }
     // Show the event info
     eventInfo.style.display = "block";
 }
@@ -131,7 +152,7 @@ function clearInfo() {
     eventInfo.style.display = "none";
 }
 
-function confirmSelection() {
+function confirmSelection(event) {
     // Disable the confirm button to prevent multiple clicks
     document.getElementById("confirm-btn").disabled = true;
 
@@ -139,12 +160,20 @@ function confirmSelection() {
     const selectedValue = document.getElementById("selectbox").value;
     const username = document.getElementById("username").innerHTML;
 
-    // Call the Google Apps Script function to handle the event
+    // Call the server to handle the event
     if (selectedValue) {
-        google.script.run
-            .withSuccessHandler(onEvnetConfirmSuccess) // Callback for success
-            .withFailureHandler(onEvnetConfirmFailure) // Callback for failure
-            .eventConfirmClicked(username, selectedValue);
+        $.ajax({
+            url: '/event/select-event',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({username, eventName: selectedValue}),
+            success: function (result) {
+                onEvnetConfirmSuccess(result);
+            },
+            error: function (error) {
+                onEvnetConfirmFailure(error);
+            }
+        });
     } else {
         alert("Please select an event!");
         document.getElementById("confirm-btn").disabled = false;
@@ -154,11 +183,12 @@ function confirmSelection() {
 }
 
 // Success handler after data is written to the sheet
-function onEvnetConfirmSuccess(result) {
-    if (result == true) {
+function onEvnetConfirmSuccess(succ_msg) {
+    let isSelectComplete = succ_msg['isSelectComplete'];
+    if (isSelectComplete) {
         alert("Event selection confirmed!");
     } else {
-        alert("Event selection failed! Please try again.");
+        alert("Event selection failed! Please try again. Or you already selected the event.");
     }
     document.getElementById("confirm-btn").disabled = false;
     clearInfo();
@@ -172,20 +202,18 @@ function onEvnetConfirmFailure(error) {
 }
 
 function fetchDisabledOptions() {
-    // Call Google Apps Script function
-    google.script.run.withSuccessHandler(DisableSelectBoxOption).getDisabledOptions();
-}
-
-function SetDisabledOptions(data) {
-    let disabledValues = [];
-    for (const [category, events] of Object.entries(data)) {
-        for (const [eventName, eventDetails] of Object.entries(events)) {
-            if (eventDetails["目前餘額"] <= 0) {
-                disabledValues.push(eventName);
-            }
+    // Call the server to get disabled options
+    $.ajax({
+        url: '/event/unavailable',
+        method: 'POST',
+        dataType: 'json',
+        success: function (data) {
+            DisableSelectBoxOption(data);
+        },
+        error: function (error) {
+            console.error('Error:', error);
         }
-    }
-    DisableSelectBoxOption(disabledValues);
+    });
 }
 
 /**************************** Main **********************************/

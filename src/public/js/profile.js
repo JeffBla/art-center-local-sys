@@ -99,19 +99,15 @@ function cancelEvent(eventname, row) {
     // Remove the row from the table
     row.parentNode.removeChild(row);
 
-    // Update the backend
-    fetch('/user/cancelEvent', {
+    $.ajax({
+        url: '/event/cancel-event',
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({eventname: eventname})
-    })
-        .then(response => response.json())
-        .then(response => {
+        contentType: 'application/json',
+        data: JSON.stringify({eventName: eventname}),
+        success: function (response) {
             console.log(response);
-        })
-        .catch(error => {
+        }, error: function (error) {
             console.error('Error cancelling event:', error);
-        });
+        }
+    });
 }

@@ -21,12 +21,8 @@ class UserModel {
         // Implement the function
     }
 
-    public async getUserEvents(username: string): Promise<[string] | null> {
-        return await firebaseService.fetchFromFirebase(`/CHOICE/${username}`);
-    }
-
     public async getUserEventsDetail(username: string): Promise<EventDetail[] | null> {
-        let userEvents = await this.getUserEvents(username);
+        let userEvents = await firebaseService.fetchFromFirebase(`/CHOICE/${username}`);
         if (!userEvents) {
             return null;
         }
