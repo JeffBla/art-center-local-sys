@@ -7,6 +7,7 @@ import logger from 'morgan';
 import usersRouter from './routes/users';
 import loginRouter from './routes/login';
 import eventRouter from './routes/event';
+import participationRouter from "./routes/participation";
 import AuthProtector from './middleware/AuthProtector';
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', loginRouter);
 app.use('/user', AuthProtector.ensureAuthenticated, usersRouter);
 app.use('/event', AuthProtector.ensureAuthenticated, eventRouter);
+app.use('/partic', AuthProtector.ensureAuthenticated, participationRouter);
 
 // catch 404 and forward to error handler
 app.use((req: Request, res: Response, next: NextFunction) => {

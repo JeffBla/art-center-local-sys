@@ -163,7 +163,7 @@ function confirmSelection(event) {
     // Call the server to handle the event
     if (selectedValue) {
         $.ajax({
-            url: '/event/select-event',
+            url: '/partic/select-event',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({username, eventName: selectedValue}),

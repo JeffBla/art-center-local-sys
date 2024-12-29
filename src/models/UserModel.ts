@@ -1,5 +1,5 @@
 import firebaseService from '../services/FirebaseService';
-import {EventDetail, Events, EventStrcut} from '../interface/EventInterface';
+import {EventDetail, EventStrcut} from '../interface/EventInterface';
 
 class UserModel {
 
@@ -15,10 +15,6 @@ class UserModel {
             console.error('Error fetching user details:', error);
             throw new Error('User not found');
         }
-    }
-
-    public saveUser(username: string, studentID: string, email: string, phone: string, password: string): void {
-        // Implement the function
     }
 
     public async getUserEventsDetail(username: string): Promise<EventDetail[] | null> {

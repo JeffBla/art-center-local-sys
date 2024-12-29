@@ -95,7 +95,7 @@ function displayData(data) {
             eventCell.textContent = eventName;
             row.appendChild(eventCell);
 
-            var fields = ["活動支援時間", "工作地點(校區/地點)", "工作時數(時)", "人數需求上限(人)", "目前餘額", "備註說明"];
+            var fields = ["支援時間(日期-星期-24小時制)", "工作地點(校區-地點)", "工作時數(時)", "人數需求上限(人)", "目前餘額", "備註說明"];
             fields.forEach(function (field) {
                 var cell = document.createElement("td");
                 cell.textContent = details[field] || ""; // Handle missing fields

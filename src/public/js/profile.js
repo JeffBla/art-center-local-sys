@@ -100,7 +100,7 @@ function cancelEvent(eventname, row) {
     row.parentNode.removeChild(row);
 
     $.ajax({
-        url: '/event/cancel-event',
+        url: '/partic/cancel-event',
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({eventName: eventname}),
